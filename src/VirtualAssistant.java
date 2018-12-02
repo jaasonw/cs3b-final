@@ -9,6 +9,8 @@ import java.util.Scanner;
  * @author Eric
  *
  * we are going to use v for visitors at the end of their id and s for staff 
+ * 
+ * Placeee the staff into the appointment and check thee info and wokr on dateee and time
  */
 
 public class VirtualAssistant {
@@ -30,18 +32,18 @@ public class VirtualAssistant {
 		//================= Staff Info ========================
 		ArrayList<Staff> allStaffs = new ArrayList<Staff>();
 		//String staffFileName = getStaffFiles();
-		File staffFile = new File("staffList.txt");
+		File staffFile = new File("staffList");
 		Scanner console = new Scanner(staffFile);
 		allStaffs = getStaffs(console);
 		
 		for(int i = 0; i < allStaffs.size(); i++)
 		{
-			allStaffs.get(i).getName();
-			allStaffs.get(i).getId();
-			allStaffs.get(i).getPhoneNum();
-			allStaffs.get(i).getEmail();
-			allStaffs.get(i).getRoomNum();
-			allStaffs.get(i).getStartTime();
+			System.out.println(allStaffs.get(i).getName());
+			System.out.println(allStaffs.get(i).getId());
+			System.out.println(allStaffs.get(i).getPhoneNum());
+			System.out.println(allStaffs.get(i).getEmail());
+			System.out.println(allStaffs.get(i).getRoomNum());
+			System.out.println(allStaffs.get(i).getStartTime());
 		}
 		
 		checkQuestionOrAppointment(questionOrAppointment,in);
