@@ -372,55 +372,19 @@ public class VirtualAssistant {
 	 */
 	public static boolean checkEmail(String word)
 	{
-		//===================== Variables =======================================
-		int inputErrorCounter = 0;
-		
-		//===================== calculations ====================================
-		if(word.length() != 12)
+		// check if theres an @
+		if (word.indexOf('@') == -1)
 		{
-			inputErrorCounter += 1;
-		}
-		else
-		{
-			//Checks area code
-			for(int i = 0;i<3;i++)
+			String[] emailSplit = word.split("@");
+			// check if the 2nd part has a .
+			if (emailSplit[1].indexOf('.') != -1)
 			{
-				if(!Character.isDigit(word.charAt(i)))
-				{
-					inputErrorCounter += 1;
-				}
-			}
-			//Check for hyphens
-			if(word.charAt(3) != '-' || word.charAt(7) != '-')
-			{
-				inputErrorCounter += 1;
-			}
-			//Check the middle 3  numbers
-			for(int i = 4;i<7;i++)
-			{
-				if(!Character.isDigit(word.charAt(i)))
-				{
-					inputErrorCounter += 1;
-				}
-			}
-			//Check the last 4
-			for(int i = 8;i<word.length();i++)
-			{
-				if(!Character.isDigit(word.charAt(i)))
-				{
-					inputErrorCounter += 1;
-				}
+				// check if the 2nd part doesnt start with a .
+				if (emailSplit[1].charAt(0) != '.')
+					return true;
 			}
 		}
-		//===================== return ==========================================
-		if(inputErrorCounter > 0)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
+		return false;
 	}
 	//========================== DESCRIPTION ==================================
 	public static String getDescription(Scanner in)
