@@ -15,9 +15,6 @@ public class Staff {
         this.id = id;
     }
 
-    public Staff() {
-    }
-
     public String getName() {
         return this.name;
     }
