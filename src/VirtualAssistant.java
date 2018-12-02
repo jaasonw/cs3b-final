@@ -83,9 +83,11 @@ public class VirtualAssistant {
 	{
 		//Visitor
 		Person visitor = getVisitorInfo(in);
+		//appointment information
+		String appointmentDescription = getDescription(in);
 		
 		//Appointment
-		Appointment newAppointment = new Appointment();
+		Appointment newAppointment = new Appointment(visitor,appointmentDescription);
 	}
 	
 	//=================================== Collecting visitor info ===============================================
@@ -99,15 +101,12 @@ public class VirtualAssistant {
 		String visitorPhone = getPhone(in);
 		//String visitorEmail = getEmail(in);
 		
-		//appointment information
-		String appointmentDescription = getDescription(in);
-		
 		//Checking to make sure user input all their personal info correctly
 		
 		//Add the visitor's email later
 		while(!changeInfo.equals("next"))
 		{
-			changeInfo = checkInfo(visitorName,visitorId,visitorPhone,appointmentDescription,in);
+			changeInfo = checkInfo(visitorName,visitorId,visitorPhone,in);
 			
 			if(changeInfo.equals("name"))
 			{
@@ -125,13 +124,9 @@ public class VirtualAssistant {
 			{
 				//visitorEmail = getEmail(in);
 			}
-			else if(changeInfo.equals("description"))
-			{
-				appointmentDescription = getDescription(in);
-			}
 		}
 		
-		Person visitor = new Person();
+		Person visitor = new Person(visitorName,visitorId,visitorPhone);
 		
 		return visitor;
 	}
@@ -260,7 +255,7 @@ public class VirtualAssistant {
 		String phoneNum = "";
 		boolean goodInput = false;
 		
-		System.out.print("Please enter your phone number(xxx-xxxx-xxxx): ");
+		System.out.print("Please enter your phone number(xxx-xxx-xxxx): ");
 		phoneNum = in.nextLine();
 		
 		while(goodInput == false)
@@ -272,7 +267,7 @@ public class VirtualAssistant {
 			else
 			{
 				goodInput = false;
-				System.out.print("The phone number should be in this form (xxx-xxxx-xxxx): ");
+				System.out.print("The phone number should be in this form (xxx-xxx-xxxx): ");
 				phoneNum = in.nextLine();
 			}
 		}
@@ -439,19 +434,19 @@ public class VirtualAssistant {
 		return description;
 	}
 	//========================== Checking user's info =========================
-	public static String checkInfo(String name,String id,String phoneNum,String description,Scanner in)
+	public static String checkInfo(String name,String id,String phoneNum,Scanner in)
 	{
 		String change = "";
 		
 		System.out.println("\nIs your information here correct?");
-		displayInfo(name,id,phoneNum,description);
+		displayInfo(name,id,phoneNum);
 		System.out.println("\nIf any of the information here is incorrect please enter the information you want to change ex.name");
 		System.out.print("If everything is fine type \"next\": ");
 		
 		change = in.nextLine().toLowerCase();
 		
 		
-		while(!change.equals("name") && !change.equals("id") && !change.equals("phone number") && !change.equals("description") && !change.equals("email") && !change.equals("next"))
+		while(!change.equals("name") && !change.equals("id") && !change.equals("phone number") && !change.equals("email") && !change.equals("next"))
 		{
 			System.out.print("That is not part of the information! Please try again: ");
 			change = in.nextLine().toLowerCase();
@@ -460,12 +455,11 @@ public class VirtualAssistant {
 		return change;
 	}
 	//========================== DISPLAY INFO =================================
-	public static void displayInfo(String name,String id,String phoneNum,String description)
+	public static void displayInfo(String name,String id,String phoneNum)
 	{
 		System.out.println("Name: " + name);
 		//Doesn't display the v, the v will keep track of who's visitor and who's staff behind the scene
 		System.out.println("ID: " + id.substring(0, id.length()-1));
 		System.out.println("Phone number: " + phoneNum);
-		System.out.println("Description: " + description);
 	}
 }

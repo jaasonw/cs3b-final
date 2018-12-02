@@ -1,7 +1,7 @@
 /**
  * This class will represent a person with a name
  */
-public class Person implements Comparable
+public class Person
 {
 	private String name;
 	private String id;
@@ -14,35 +14,50 @@ public class Person implements Comparable
 	public Person()
 	{
 		name = "";
+		id = "";
+		phoneNum = "";
+		email = "";
 	}
-	/**
-	 * This method will set the name of the person
-	 * @param n - name of the person
-	 */
-	public void setName(String n)
+	
+	public Person(String name,String id,String phoneNum)
 	{
-		name = n;
+		this.name  = name;
+		this.id = id;
+		this.phoneNum = phoneNum;
 	}
-	/**
-	 * This method will get the name of the person
-	 * @return - the name of the person
-	 */
-	public String getName()
-	{
+
+	public String getName() {
 		return name;
 	}
-	/**
-	 * This method will overload the compareTo method in order to get the orders of the names
-	 * return -1 if first name is before second, 0 if they both start with the same letter, and 1 if first name comes before other
-	 */
-	public int compareTo(Object otherObject) {
-		
-		Person other = (Person)(otherObject);
-		
-		if(name.charAt(0) < other.getName().charAt(0)) {return -1;}
-		else if(name.charAt(0) == other.getName().charAt(0))  {return 0;}
-		else {return 1;}
-		
+
+	public void setName(String name) {
+		this.name = name;
 	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getPhoneNum() {
+		return phoneNum;
+	}
+
+	public void setPhoneNum(String phoneNum) {
+		this.phoneNum = phoneNum;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	
 
 }
