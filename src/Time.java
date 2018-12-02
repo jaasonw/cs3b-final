@@ -38,3 +38,4 @@ public class Time {
         return hour == time.hour && minute == time.minute;
     }
 }
+
