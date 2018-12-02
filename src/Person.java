@@ -19,11 +19,12 @@ public class Person
 		email = "";
 	}
 	
-	public Person(String name,String id,String phoneNum)
+	public Person(String name,String id,String phoneNum,String email)
 	{
 		this.name  = name;
 		this.id = id;
 		this.phoneNum = phoneNum;
+		this.email = email;
 	}
 
 	public String getName() {

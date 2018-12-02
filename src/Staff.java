@@ -1,49 +1,42 @@
 /**
  * Staff
  */
-public class Staff {
-    private String name;
-    private String email;
-    private String phoneNumber;
-    private int id;
+public class Staff extends Person
+{
+	private Time startTime;
+	private Time endTime;
+	private String roomNum;
+	
+	public Staff(String name, String id, String phoneNum, String email,String roomNum, int[] startTime, int[] endTime)
+	{
+		super(name,id,phoneNum,email);
+		this.roomNum = roomNum;
+		this.startTime = new Time(startTime[0],startTime[1]);
+		this.endTime = new Time(endTime[0],endTime[1]);
+	}
 
+	public Time getStartTime() {
+		return startTime;
+	}
 
-    public Staff(String name, String email, String phoneNumber, int id) {
-        this.name = name;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.id = id;
-    }
+	public void setStartTime(Time startTime) {
+		this.startTime = startTime;
+	}
 
-    public String getName() {
-        return this.name;
-    }
+	public Time getEndTime() {
+		return endTime;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setEndTime(Time endTime) {
+		this.endTime = endTime;
+	}
 
-    public String getEmail() {
-        return this.email;
-    }
+	public String getRoomNum() {
+		return roomNum;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return this.phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public int getId() {
-        return this.id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+	public void setRoomNum(String roomNum) {
+		this.roomNum = roomNum;
+	}
+	
 }

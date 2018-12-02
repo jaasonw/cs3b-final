@@ -27,6 +27,10 @@ public class Time {
         this.minute = minute;
     }
     
+    public String toString() {
+    	return this.hour + ":" + this.minute;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (o == this)

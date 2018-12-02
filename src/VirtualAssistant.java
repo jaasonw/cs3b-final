@@ -27,10 +27,83 @@ public class VirtualAssistant {
 		allAppointments = getAppointmentFile(console);
 		*/
 		
+		//================= Staff Info ========================
+		ArrayList<Staff> allStaffs = new ArrayList<Staff>();
+		//String staffFileName = getStaffFiles();
+		File staffFile = new File("staffList.txt");
+		Scanner console = new Scanner(staffFile);
+		allStaffs = getStaffs(console);
+		
+		for(int i = 0; i < allStaffs.size(); i++)
+		{
+			allStaffs.get(i).getName();
+			allStaffs.get(i).getId();
+			allStaffs.get(i).getPhoneNum();
+			allStaffs.get(i).getEmail();
+			allStaffs.get(i).getRoomNum();
+			allStaffs.get(i).getStartTime();
+		}
+		
 		checkQuestionOrAppointment(questionOrAppointment,in);
 		
 		
 		in.close();
+	}
+	/**
+	 * This function will get the file containing all the appointments the user wants to read in
+	 * @return file - returns the name of the file that was able to be read in.
+	 */
+	public static String getStaffFiles()
+	{
+		//========================= Variables =====================================
+		boolean done = false;
+		Scanner in = new Scanner(System.in);
+		String file = "";
+		//========================= Calculations =====================================
+		while(!done)
+		{
+			try
+			{
+				System.out.print("Pleaase enter a The file containing the appointments to be read: ");
+				file = in.nextLine();
+				File inFile = new File(file);
+				Scanner console = new Scanner(inFile);
+				console.close();
+				done = true;
+			}
+			catch (FileNotFoundException exception)
+			{
+				System.out.println("File not found.");
+			}
+		}
+		//========================= Return =====================================
+		return file;
+	}
+	public static ArrayList<Staff> getStaffs(Scanner console)
+	{
+		ArrayList<Staff> allStaffs = new ArrayList<Staff>();
+		int[] startTime = new int[2];
+		int[] endTime = new int[2];
+		
+		
+		while(console.hasNextLine())
+		{	
+			String name = console.nextLine();
+			String id = console.nextLine();
+			String phoneNum = console.nextLine();
+			String email = console.nextLine();
+			String roomNum = console.nextLine();
+			startTime[0] = console.nextInt();
+			startTime[1]= console.nextInt();
+			endTime[0] = console.nextInt();
+			endTime[1] = console.nextInt();
+			
+			Staff newStaff = new Staff(name, id, phoneNum, email, roomNum, startTime, endTime);
+			
+			allStaffs.add(newStaff);
+		}
+		
+		return allStaffs;
 	}
 	/**
 	 * This function will get the file containing all the appointments the user wants to read in
@@ -211,7 +284,7 @@ public class VirtualAssistant {
 			}
 		}
 		
-		Person visitor = new Person(visitorName,visitorId,visitorPhone);
+		Person visitor = new Person(visitorName,visitorId,visitorPhone,visitorEmail);
 		
 		return visitor;
 	}
