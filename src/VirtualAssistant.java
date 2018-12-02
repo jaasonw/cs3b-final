@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -8,15 +12,90 @@ import java.util.Scanner;
  */
 
 public class VirtualAssistant {
-	public static void main(String args[])
+	public static void main(String args[]) throws FileNotFoundException
 	{
 		Scanner in = new Scanner(System.in);
 		String questionOrAppointment = getAppointmentOrQuestion(in);
+		
+		/*Saving info
+		ArrayList<Appointment> allAppointments = new ArrayList<Appointment>();
+		String fileName = getAppointmentFiles();
+		
+		File inFile = new File(fileName);
+		Scanner console = new Scanner(inFile);
+		
+		allAppointments = getAppointmentFile(console);
+		*/
 		
 		checkQuestionOrAppointment(questionOrAppointment,in);
 		
 		
 		in.close();
+	}
+	/**
+	 * This function will get the file containing all the appointments the user wants to read in
+	 * @return file - returns the name of the file that was able to be read in.
+	 */
+	public static String getAppointmentFiles()
+	{
+		//========================= Variables =====================================
+		boolean done = false;
+		Scanner in = new Scanner(System.in);
+		String file = "";
+		//========================= Calculations =====================================
+		while(!done)
+		{
+			try
+			{
+				System.out.print("Pleaase enter a The file containing the appointments to be read: ");
+				file = in.nextLine();
+				File inFile = new File(file);
+				Scanner console = new Scanner(inFile);
+				console.close();
+				done = true;
+			}
+			catch (FileNotFoundException exception)
+			{
+				System.out.println("File not found.");
+			}
+		}
+		//========================= Return =====================================
+		return file;
+	}
+	/**
+	 * This function will get the date of the appointment from the line read in
+	 * @param line - the line in the file 
+	 * @return dates - 3 integers representing the month, day and year
+	 */
+	public static int[] getDate(String line)
+	{
+		//======================== Variables ======================================
+		String month = "";
+		String day = "";
+		String year = "";
+		String[] findDate = line.split("/");
+		int[] dates  = new int[3];
+		
+		//======================== Calculations ======================================
+		//gets the month
+		for(int i = 0; i < findDate[0].length(); i++)
+		{
+			if(Character.isDigit(line.charAt(i)))
+			{
+				month += line.charAt(i);
+			}
+		}
+		//contaians the day and the year
+		day = findDate[1];
+		year = findDate[2];
+		
+		dates[0] = Integer.parseInt(month);
+		dates[1] = Integer.parseInt(day);
+		dates[2] = Integer.parseInt(year);
+		
+		//======================== Return ======================================
+		return dates;
+		
 	}
 	public static String getAppointmentOrQuestion(Scanner in)
 	{
@@ -83,6 +162,12 @@ public class VirtualAssistant {
 	{
 		//Visitor
 		Person visitor = getVisitorInfo(in);
+		
+		//Show available appointment times
+		//displayAppointmentTimes();
+		
+		//Show staff
+		
 		//appointment information
 		String appointmentDescription = getDescription(in);
 		
@@ -99,14 +184,14 @@ public class VirtualAssistant {
 		String visitorName = getName(in);
 		String visitorId = getID(in);
 		String visitorPhone = getPhone(in);
-		//String visitorEmail = getEmail(in);
+		String visitorEmail = getEmail(in);
 		
 		//Checking to make sure user input all their personal info correctly
 		
 		//Add the visitor's email later
 		while(!changeInfo.equals("next"))
 		{
-			changeInfo = checkInfo(visitorName,visitorId,visitorPhone,in);
+			changeInfo = checkInfo(visitorName,visitorId,visitorPhone,visitorEmail,in);
 			
 			if(changeInfo.equals("name"))
 			{
@@ -122,7 +207,7 @@ public class VirtualAssistant {
 			}
 			else if(changeInfo.equals("email"))
 			{
-				//visitorEmail = getEmail(in);
+				visitorEmail = getEmail(in);
 			}
 		}
 		
@@ -138,7 +223,7 @@ public class VirtualAssistant {
 		String name = "";
 		boolean noDigits = false;
 		
-		System.out.print("What is your name?:  ");
+		System.out.print("What is your name?: ");
 		name = in.nextLine();
 				
 		while(noDigits == false)
@@ -340,7 +425,7 @@ public class VirtualAssistant {
 		String email = "";
 		boolean goodInput = false;
 		
-		System.out.print("Please enter your phone number(xxx-xxx-xxxx): ");
+		System.out.print("Please enter your email address: ");
 		email = in.nextLine();
 		
 		while(goodInput == false)
@@ -352,7 +437,7 @@ public class VirtualAssistant {
 			else
 			{
 				goodInput = false;
-				System.out.print("The phone number should be in this form (xxx-xxx-xxxx): ");
+				System.out.print("The email address should be in the form of example@emailCompany.com: ");
 				email = in.nextLine();
 			}
 		}
@@ -368,7 +453,7 @@ public class VirtualAssistant {
 	public static boolean checkEmail(String word)
 	{
 		// check if theres an @
-		if (word.indexOf('@') == -1)
+		if (word.indexOf('@') != -1)
 		{
 			String[] emailSplit = word.split("@");
 			// check if the 2nd part has a .
@@ -398,12 +483,12 @@ public class VirtualAssistant {
 		return description;
 	}
 	//========================== Checking user's info =========================
-	public static String checkInfo(String name,String id,String phoneNum,Scanner in)
+	public static String checkInfo(String name,String id,String phoneNum,String email,Scanner in)
 	{
 		String change = "";
 		
 		System.out.println("\nIs your information here correct?");
-		displayInfo(name,id,phoneNum);
+		displayInfo(name,id,phoneNum,email);
 		System.out.println("\nIf any of the information here is incorrect please enter the information you want to change ex.name");
 		System.out.print("If everything is fine type \"next\": ");
 		
@@ -419,11 +504,12 @@ public class VirtualAssistant {
 		return change;
 	}
 	//========================== DISPLAY INFO =================================
-	public static void displayInfo(String name,String id,String phoneNum)
+	public static void displayInfo(String name,String id,String phoneNum,String email)
 	{
 		System.out.println("Name: " + name);
 		//Doesn't display the v, the v will keep track of who's visitor and who's staff behind the scene
 		System.out.println("ID: " + id.substring(0, id.length()-1));
 		System.out.println("Phone number: " + phoneNum);
+		System.out.println("Email: " + email);
 	}
 }
