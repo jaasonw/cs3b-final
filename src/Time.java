@@ -27,6 +27,7 @@ public class Time {
         this.minute = minute;
     }
     
+    @Override
     public String toString() {
     	if(this.minute < 10)
     		return this.hour + ":" + this.minute + "0";

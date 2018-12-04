@@ -1,28 +1,24 @@
-
 public class Appointment {
+	private Person visitor;
+	private String reason;
+	private boolean open;
+	private Time start;
+	private Time end;
 	
-	Person visitor;
-	String visitDescription;
+	public Appointment(Time start, Time end) {
+		this.visitor = new Person();
+		this.open = true;
+		this.start = start;
+		this.end = end;
+	}
 	
-	public Appointment()
-	{
-		visitor = new Person();
-	}
-	public Appointment(Person visitor,String  description)
-	{
-		this.visitor = visitor;
-		visitDescription = description;
-	}
-	public Person getVisitor() {
-		return visitor;
-	}
-	public void setVisitor(Person visitor) {
-		this.visitor = visitor;
-	}
-	public String getVisitDescription() {
-		return visitDescription;
-	}
-	public void setVisitDescription(String visitDescription) {
-		this.visitDescription = visitDescription;
+	public Person getVisitor() { return visitor; }
+	public void setVisitor(Person visitor) { this.visitor = visitor; }
+	public String getReason() { return this.reason; }
+	public void setReason(String reason) { this.reason = reason; }
+
+	@Override
+	public String toString() {
+		return start + " - " + end + " " + (this.open) ? "OPEN" : "CLOSED";
 	}
 }
