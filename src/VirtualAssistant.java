@@ -32,21 +32,11 @@ public class VirtualAssistant {
 		//================= Staff Info ========================
 		ArrayList<Staff> allStaffs = new ArrayList<Staff>();
 		//String staffFileName = getStaffFiles();
-		File staffFile = new File("staffList");
+		File staffFile = new File("staffList.txt");
 		Scanner console = new Scanner(staffFile);
 		allStaffs = getStaffs(console);
 		
-		for(int i = 0; i < allStaffs.size(); i++)
-		{
-			System.out.println(allStaffs.get(i).getName());
-			System.out.println(allStaffs.get(i).getId());
-			System.out.println(allStaffs.get(i).getPhoneNum());
-			System.out.println(allStaffs.get(i).getEmail());
-			System.out.println(allStaffs.get(i).getRoomNum());
-			System.out.println(allStaffs.get(i).getStartTime());
-		}
-		
-		checkQuestionOrAppointment(questionOrAppointment,in);
+		checkQuestionOrAppointment(questionOrAppointment,in,allStaffs);
 		
 		
 		in.close();
@@ -95,10 +85,10 @@ public class VirtualAssistant {
 			String phoneNum = console.nextLine();
 			String email = console.nextLine();
 			String roomNum = console.nextLine();
-			startTime[0] = console.nextInt();
-			startTime[1]= console.nextInt();
-			endTime[0] = console.nextInt();
-			endTime[1] = console.nextInt();
+			startTime[0] = Integer.parseInt(console.nextLine());
+			startTime[1]= Integer.parseInt(console.nextLine());
+			endTime[0] = Integer.parseInt(console.nextLine());
+			endTime[1] = Integer.parseInt(console.nextLine());
 			
 			Staff newStaff = new Staff(name, id, phoneNum, email, roomNum, startTime, endTime);
 			
@@ -187,11 +177,11 @@ public class VirtualAssistant {
 		
 		return questionOrAppointment;
 	}
-	public static void checkQuestionOrAppointment(String qOrA,Scanner in)
+	public static void checkQuestionOrAppointment(String qOrA,Scanner in,ArrayList<Staff> allStaffs)
 	{
 		if(qOrA.equals("appointment"))
 		{
-			checkOrMakeAppointment(in);
+			checkOrMakeAppointment(in,allStaffs);
 		}
 		else if(qOrA.equals("question"))
 		{
@@ -202,7 +192,7 @@ public class VirtualAssistant {
 	 * For right now the user has to type new Appointment to make  a new appointment if we want voice recognition  then change what the setOrchecekAppointment is looking for
 	 * @param in
 	 */
-	public static void checkOrMakeAppointment(Scanner in)
+	public static void checkOrMakeAppointment(Scanner in, ArrayList<Staff> allStaffs)
 	{
 		String setOrCheckAppointments = "";
 		
@@ -219,7 +209,7 @@ public class VirtualAssistant {
 		//If the user wants to make a new appointment
 		if(setOrCheckAppointments.equals("new appointment"))
 		{
-			createNewAppointment(in);
+			createNewAppointment(in,allStaffs);
 		}
 		//If the user wants to check in
 		else if(setOrCheckAppointments.equals("check in"))
@@ -233,15 +223,37 @@ public class VirtualAssistant {
 		System.out.println("asking question");
 	}
 	//================================== Creating new appointments ============================================
-	public static void createNewAppointment(Scanner in)
+	public static void createNewAppointment(Scanner in,ArrayList<Staff> allStaffs)
 	{
+		int chooseStaff = 0;
+		
+		//Show staff
+		System.out.println("Here is a list of our staffs: ");
+		for(int i = 0; i < allStaffs.size(); i++)
+		{
+			System.out.println(i+1 + ".");
+			System.out.println("Name: " + allStaffs.get(i).getName());
+			System.out.println("ID: " + allStaffs.get(i).getId());
+			System.out.println("Phone number: " + allStaffs.get(i).getPhoneNum());
+			System.out.println("Email: " + allStaffs.get(i).getEmail());
+			System.out.println("Room number: " + allStaffs.get(i).getRoomNum());
+			System.out.println("Start Time: " + allStaffs.get(i).getStartTime());
+			System.out.println("End Time: " + allStaffs.get(i).getEndTime());
+		}
+		
+		System.out.println("Which Staff memeber would you like to see?: ");
+		chooseStaff = in.nextInt();
+		
+		//Display staff appointments
+		//allStaffs[chooseStaff];
+		
 		//Visitor
 		Person visitor = getVisitorInfo(in);
 		
 		//Show available appointment times
 		//displayAppointmentTimes();
 		
-		//Show staff
+		
 		
 		//appointment information
 		String appointmentDescription = getDescription(in);

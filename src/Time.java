@@ -28,7 +28,10 @@ public class Time {
     }
     
     public String toString() {
-    	return this.hour + ":" + this.minute;
+    	if(this.minute < 10)
+    		return this.hour + ":" + this.minute + "0";
+    	else
+    		return this.hour + ":" + this.minute;
     }
     
     @Override
