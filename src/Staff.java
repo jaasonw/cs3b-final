@@ -10,8 +10,8 @@ public class Staff extends Person
 	private Time startTime;
 	private Time endTime;
 	private String roomNum;
-	private ArrayList<Appointment> appointments = new ArrayList<Appointment>();
-	//private HashMap schedule<Date, ArrayList<Appointment>> map = new HashMap<>(); 
+	private ArrayList<Date> dates = new ArrayList<Date>();
+	private HashMap<Date, ArrayList<Appointment>> schedule = new HashMap<>(); 
 	
 	public Staff(String name, String id, String phoneNum, String email,String roomNum, int[] startTime,String startAmPm, int[] endTime,String endAmPm)
 	{
@@ -31,14 +31,6 @@ public class Staff extends Person
 
 	public Time getStartTime() {
 		return startTime;
-	}
-
-	public ArrayList<Appointment> getAppointments() {
-		return appointments;
-	}
-
-	public void setAppointments(ArrayList<Appointment> appointments) {
-		this.appointments = appointments;
 	}
 
 	public void setStartTime(Time startTime) {
@@ -61,10 +53,11 @@ public class Staff extends Person
 		this.roomNum = roomNum;
 	}
 	
-	public void createAppointments() {
+	public ArrayList<Appointment> createAppointments() {
 		Time interval = new Time(this.startTime.getHour(),this.getStartTime().getMinute());
 		Time appointmentStart;
 		Time appointmentEnd;
+		ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
 
 		while(!interval.equals(this.endTime))
 		{
@@ -73,19 +66,51 @@ public class Staff extends Person
 			appointmentEnd = new Time(interval.getHour(),interval.getMinute());
 			Appointment newAppointment = new Appointment(appointmentStart,appointmentEnd);
 
-			this.appointments.add(newAppointment);
+			appointmentList.add(newAppointment);
 		}
+		
+		return appointmentList;
 	}
 	
-	public void showAppointments()
-	{
-		for(int i = 0;i < this.appointments.size();i++)
+	public void createSchedule() {
+		final int APPOINTMENT_RANGE = 14; //You can change this number depending on how many days in advance you can schedule an appointment
+		
+		for(int i = 0; i < APPOINTMENT_RANGE;i++)
 		{
-			System.out.print(i + ": ");
-			System.out.println(this.appointments.get(i));
-
+			Date today = new Date();
+			today.addDays(i);
+			this.dates.add(today);
+			
+			this.schedule.put(today, createAppointments());
 		}
 	}
 	
+	public ArrayList<Date> getDates() {
+		return dates;
+	}
+
+	public void setDates(ArrayList<Date> dates) {
+		this.dates = dates;
+	}
+
+	public void showDates() {
+		
+		for(int i = 0;i < this.dates.size();i++) {
+			System.out.println(i+1 + ". " + this.dates.get(i));
+		}
+	}
 	
+	public void showTimes(Date specifiedDate) {
+		
+		for(int i = 0;i < this.schedule.get(specifiedDate).size();i++)
+		{
+			System.out.println((i+1) + ". " + this.schedule.get(specifiedDate).get(i));
+		}
+	}
+	
+	public ArrayList<Appointment> getAppointments(Date specifiedDate){
+		
+		return this.schedule.get(specifiedDate);
+		
+	}
 }

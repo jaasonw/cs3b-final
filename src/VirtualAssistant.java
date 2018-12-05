@@ -1,3 +1,10 @@
+/**
+ * check in
+ * Questions
+ * back track from time to dates to staff
+ * UI
+ */
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -16,7 +23,6 @@ public class VirtualAssistant {
 	public static void main(String args[]) throws FileNotFoundException
 	{
 		Scanner in = new Scanner(System.in);
-		String questionOrAppointment = getAppointmentOrQuestion(in);
 		
 		/*Saving info
 		ArrayList<Appointment> allAppointments = new ArrayList<Appointment>();
@@ -36,10 +42,16 @@ public class VirtualAssistant {
 		
 		allStaffs = getStaffs(console);
 		
-		createStaffAppointments(allStaffs);
 		generateSchedule(allStaffs);
 		
-		checkQuestionOrAppointment(questionOrAppointment,in,allStaffs);
+		//Loop through program
+		boolean done = false;
+		
+		while(!done)
+		{
+			String questionOrAppointment = getAppointmentOrQuestion(in);
+			checkQuestionOrAppointment(questionOrAppointment,in,allStaffs);
+		}
 		
 		
 		in.close();
@@ -86,16 +98,12 @@ public class VirtualAssistant {
 		
 		return allStaffs;
 	}
-	public static void createStaffAppointments(ArrayList<Staff> allStaffs)
+	public static void generateSchedule(ArrayList<Staff> allStaffs)
 	{
 		for(int i = 0;i < allStaffs.size();i++)
 		{
-			allStaffs.get(i).createAppointments();
+			allStaffs.get(i).createSchedule();
 		}
-	}
-	public static void generateSchedule(ArrayList<Staff> allStaffs)
-	{
-		
 	}
 	/**
 	 * This function will get the file containing all the appointments the user wants to read in
@@ -226,21 +234,66 @@ public class VirtualAssistant {
 	public static void createNewAppointment(Scanner in,ArrayList<Staff> allStaffs)
 	{
 		int staffChosen = 0;
+		Staff currentStaff;
+		
+		int dateChosen = 0;
+		Date currentDate;
+		
+		int appointmentChosen = 0;
+		Appointment currentAppointment;
 		
 		//Show staff
 		displayStaff(allStaffs);
 		
 		//Choose staff you want to see
 		staffChosen = chooseStaff(in, allStaffs.size());		
+		//The current staff that was picked
+		currentStaff = allStaffs.get(staffChosen);
 		
-		//Display staff appointments
-		allStaffs.get(staffChosen).showAppointments();
+		//Display staff schedule
+		System.out.println("Available dates: ");
+		currentStaff.showDates();
+		
+		dateChosen = chooseDate(in,currentStaff.getDates().size()); 
+		
+		currentDate = currentStaff.getDates().get(dateChosen);
+		
+		//Display the available appointment times
+		System.out.println("Available times: ");
+		currentStaff.showTimes(currentDate);
+		
+		appointmentChosen = chooseAppointment(in,currentStaff.getAppointments(currentDate).size());
+		
+		currentAppointment = currentStaff.getAppointments(currentDate).get(appointmentChosen);
+	
+		//If the current appointment is already chosen
+		while(!currentAppointment.getOpen()) {
+			System.out.println("Sorry that time is already taken! Please try again: ");
+			
+			currentStaff.showTimes(currentDate);
+			
+			appointmentChosen = chooseAppointment(in,currentStaff.getAppointments(currentDate).size());
+			
+			currentAppointment = currentStaff.getAppointments(currentDate).get(appointmentChosen);
+		}
 		
 		//Visitor
 		Person visitor = getVisitorInfo(in);
 		
 		//appointment information
 		String appointmentDescription = getDescription(in);
+		
+		//Set the appointment info into the appointment class
+		currentAppointment.setVisitor(visitor);
+		currentAppointment.setReason(appointmentDescription);
+		currentAppointment.closeAppointment();
+		
+		//Show that the appointment closed
+		currentStaff.showTimes(currentDate);
+		
+		
+		
+		
 	}
 	public static void displayStaff(ArrayList<Staff> allStaffs)
 	{
@@ -260,20 +313,57 @@ public class VirtualAssistant {
 	
 	public static int chooseStaff(Scanner in, int maxNum)
 	{
-		int chooseStaff = 0;
+		int chooseStaff = 1;
 		
 		System.out.print("Which Staff member would you like to see?: ");
 		chooseStaff = in.nextInt();
 		
-		while(chooseStaff < 0 || chooseStaff >= maxNum)
+		while(chooseStaff < 1 || chooseStaff >= maxNum + 1)
 		{
 			System.out.print("Sorry, but that is not an option, please try again: ");
 			chooseStaff = in.nextInt();
 		}
 		
-		return chooseStaff;
+		in.nextLine();
+		
+		return chooseStaff - 1;
 	}
 	
+	public static int chooseDate(Scanner in, int maxNum)
+	{
+		int chooseDate = 1;
+		
+		System.out.print("Which Date would you like to see?: ");
+		chooseDate = in.nextInt();
+		
+		while(chooseDate < 1 || chooseDate >= maxNum + 1)
+		{
+			System.out.print("Sorry, but that is not an option, please try again: ");
+			chooseDate = in.nextInt();
+		}
+		
+		in.nextLine();
+		
+		return chooseDate - 1;
+	}
+	
+	public static int chooseAppointment(Scanner in, int maxNum)
+	{
+		int chooseAppointment = 1;
+		
+		System.out.print("Which Date would you like to see?: ");
+		chooseAppointment = in.nextInt();
+		
+		while(chooseAppointment < 1 || chooseAppointment >= maxNum + 1)
+		{
+			System.out.print("Sorry, but that is not an option, please try again: ");
+			chooseAppointment = in.nextInt();
+		}
+		
+		in.nextLine();
+		
+		return chooseAppointment - 1;
+	}
 	//=================================== Collecting visitor info ===============================================
 	public static Person getVisitorInfo(Scanner in)
 	{

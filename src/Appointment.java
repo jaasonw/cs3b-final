@@ -13,10 +13,17 @@ public class Appointment {
 	}
 	
 	public Person getVisitor() { return visitor; }
+	
 	public void setVisitor(Person visitor) { this.visitor = visitor; }
+	
 	public String getReason() { return this.reason; }
+	
 	public void setReason(String reason) { this.reason = reason; }
 
+	public void closeAppointment() {this.open = false;}
+	
+	public boolean getOpen() {return this.open;}
+	
 	@Override
 	public String toString() {
 		return this.start + " - " + this.end + " " + ((this.open) ? "OPEN" : "CLOSED");
