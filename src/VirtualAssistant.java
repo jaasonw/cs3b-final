@@ -38,6 +38,7 @@ public class VirtualAssistant {
 		allStaffs = getStaffs(console);
 		
 		createStaffAppointments(allStaffs);
+		generateSchedule(allStaffs);
 		
 		checkQuestionOrAppointment(questionOrAppointment,in,allStaffs);
 		
@@ -92,6 +93,10 @@ public class VirtualAssistant {
 		{
 			allStaffs.get(i).createAppointments();
 		}
+	}
+	public static void generateSchedule(ArrayList<Staff> allStaffs)
+	{
+		
 	}
 	/**
 	 * This function will get the file containing all the appointments the user wants to read in
@@ -221,9 +226,25 @@ public class VirtualAssistant {
 	//================================== Creating new appointments ============================================
 	public static void createNewAppointment(Scanner in,ArrayList<Staff> allStaffs)
 	{
-		int chooseStaff = 0;
+		int staffChosen = 0;
 		
 		//Show staff
+		displayStaff(allStaffs);
+		
+		//Choose staff you want to see
+		staffChosen = chooseStaff(in, allStaffs.size());		
+		
+		//Display staff appointments
+		allStaffs.get(staffChosen).showAppointments();
+		
+		//Visitor
+		Person visitor = getVisitorInfo(in);
+		
+		//appointment information
+		String appointmentDescription = getDescription(in);
+	}
+	public static void displayStaff(ArrayList<Staff> allStaffs)
+	{
 		System.out.println("Here is a list of our staffs: ");
 		for(int i = 0; i < allStaffs.size(); i++)
 		{
@@ -236,23 +257,22 @@ public class VirtualAssistant {
 			System.out.println("Start Time: " + allStaffs.get(i).getStartTime() + " " + allStaffs.get(i).getStartAmOrPm());
 			System.out.println("End Time: " + allStaffs.get(i).getEndTime() + " " + allStaffs.get(i).getEndAmOrPm());
 		}
+	}
+	
+	public static int chooseStaff(Scanner in, int maxNum)
+	{
+		int chooseStaff = 0;
 		
-		System.out.println("Which Staff memeber would you like to see?: ");
+		System.out.print("Which Staff member would you like to see?: ");
 		chooseStaff = in.nextInt();
 		
-		//Display staff appointments
-		//Appointment newAppointment = new Appointment();
+		while(chooseStaff < 0 || chooseStaff >= maxNum)
+		{
+			System.out.print("Sorry, but that is not an option, please try again: ");
+			chooseStaff = in.nextInt();
+		}
 		
-		//Visitor
-		Person visitor = getVisitorInfo(in);
-		
-		//Show available appointment times
-		//displayAppointmentTimes();
-		
-		
-		
-		//appointment information
-		String appointmentDescription = getDescription(in);
+		return chooseStaff;
 	}
 	
 	//=================================== Collecting visitor info ===============================================
