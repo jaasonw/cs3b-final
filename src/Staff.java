@@ -82,11 +82,11 @@ public class Staff extends Person
 		{
 			while(!interval.equals(this.endTime))
 			{
-				appointmentStart = interval;
+				appointmentStart = new Time(interval.getHour(),interval.getMinute());
 				interval.addMinutes(30);
-				appointmentEnd = interval;
+				appointmentEnd = new Time(interval.getHour(),interval.getMinute());
 				Appointment newAppointment = new Appointment(appointmentStart,appointmentEnd);
-				
+
 				this.appointments.add(newAppointment);
 			}
 		}
