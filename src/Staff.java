@@ -1,22 +1,54 @@
 /**
  * Staff
  */
+
+import java.util.ArrayList;
+
 public class Staff extends Person
 {
 	private Time startTime;
+	private String startAmOrPm;
 	private Time endTime;
+	private String endAmOrPm;
 	private String roomNum;
+	private ArrayList<Appointment> appointments = new ArrayList<Appointment>(); 
 	
-	public Staff(String name, String id, String phoneNum, String email,String roomNum, int[] startTime, int[] endTime)
+	public Staff(String name, String id, String phoneNum, String email,String roomNum, int[] startTime,String startAmPm, int[] endTime,String endAmPm)
 	{
 		super(name,id,phoneNum,email);
 		this.roomNum = roomNum;
 		this.startTime = new Time(startTime[0],startTime[1]);
+		this.startAmOrPm = startAmPm;
 		this.endTime = new Time(endTime[0],endTime[1]);
+		this.endAmOrPm = endAmPm;
 	}
 
 	public Time getStartTime() {
 		return startTime;
+	}
+
+	public String getStartAmOrPm() {
+		return startAmOrPm;
+	}
+
+	public void setStartAmOrPm(String startAmOrPm) {
+		this.startAmOrPm = startAmOrPm;
+	}
+
+	public String getEndAmOrPm() {
+		return endAmOrPm;
+	}
+
+	public void setEndAmOrPm(String endAmOrPm) {
+		this.endAmOrPm = endAmOrPm;
+	}
+
+	public ArrayList<Appointment> getAppointments() {
+		return appointments;
+	}
+
+	public void setAppointments(ArrayList<Appointment> appointments) {
+		this.appointments = appointments;
 	}
 
 	public void setStartTime(Time startTime) {
@@ -39,4 +71,32 @@ public class Staff extends Person
 		this.roomNum = roomNum;
 	}
 	
+	public void createAppointments() {
+		Time interval = new Time(this.startTime.getHour(),this.getStartTime().getMinute());
+		Time appointmentStart;
+		Time appointmentEnd;
+		
+		
+		//AM TO AM
+		if(this.startAmOrPm.equals(this.endAmOrPm))
+		{
+			while(!interval.equals(this.endTime))
+			{
+				appointmentStart = interval;
+				interval.addMinutes(30);
+				appointmentEnd = interval;
+				Appointment newAppointment = new Appointment(appointmentStart,appointmentEnd);
+				
+				this.appointments.add(newAppointment);
+			}
+		}
+		
+		for(int i = 0;i < this.appointments.size();i++)
+		{
+			System.out.println("Appointment" + i + ": ");
+			System.out.println(this.appointments.get(i));
+		}
+		//AM TO PM
+		
+	}
 }

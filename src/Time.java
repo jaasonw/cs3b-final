@@ -27,6 +27,16 @@ public class Time {
         this.minute = minute;
     }
     
+    public void addMinutes(int minutes)
+    {
+    	this.minute += minutes;
+    	if(this.minute >= 60)
+    	{
+    		this.minute -= 60;
+    		this.hour += 1;
+    	}
+    }
+    
     @Override
     public String toString() {
     	if(this.minute < 10)

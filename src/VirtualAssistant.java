@@ -31,45 +31,18 @@ public class VirtualAssistant {
 		
 		//================= Staff Info ========================
 		ArrayList<Staff> allStaffs = new ArrayList<Staff>();
-		//String staffFileName = getStaffFiles();
 		File staffFile = new File("staffList.txt");
+		
 		Scanner console = new Scanner(staffFile);
+		
 		allStaffs = getStaffs(console);
+		
+		createStaffAppointments(allStaffs);
 		
 		checkQuestionOrAppointment(questionOrAppointment,in,allStaffs);
 		
 		
 		in.close();
-	}
-	/**
-	 * This function will get the file containing all the appointments the user wants to read in
-	 * @return file - returns the name of the file that was able to be read in.
-	 */
-	public static String getStaffFiles()
-	{
-		//========================= Variables =====================================
-		boolean done = false;
-		Scanner in = new Scanner(System.in);
-		String file = "";
-		//========================= Calculations =====================================
-		while(!done)
-		{
-			try
-			{
-				System.out.print("Pleaase enter a The file containing the appointments to be read: ");
-				file = in.nextLine();
-				File inFile = new File(file);
-				Scanner console = new Scanner(inFile);
-				console.close();
-				done = true;
-			}
-			catch (FileNotFoundException exception)
-			{
-				System.out.println("File not found.");
-			}
-		}
-		//========================= Return =====================================
-		return file;
 	}
 	public static ArrayList<Staff> getStaffs(Scanner console)
 	{
@@ -80,22 +53,45 @@ public class VirtualAssistant {
 		
 		while(console.hasNextLine())
 		{	
-			String name = console.nextLine();
-			String id = console.nextLine();
-			String phoneNum = console.nextLine();
-			String email = console.nextLine();
-			String roomNum = console.nextLine();
-			startTime[0] = Integer.parseInt(console.nextLine());
-			startTime[1]= Integer.parseInt(console.nextLine());
-			endTime[0] = Integer.parseInt(console.nextLine());
-			endTime[1] = Integer.parseInt(console.nextLine());
-			
-			Staff newStaff = new Staff(name, id, phoneNum, email, roomNum, startTime, endTime);
-			
-			allStaffs.add(newStaff);
+			try
+			{
+				String name = console.nextLine();
+				String id = console.nextLine();
+				String phoneNum = console.nextLine();
+				String email = console.nextLine();
+				String roomNum = console.nextLine();
+				startTime[0] = Integer.parseInt(console.nextLine());
+				startTime[1]= Integer.parseInt(console.nextLine());
+				String startAmPm = console.nextLine().toUpperCase();
+				endTime[0] = Integer.parseInt(console.nextLine());
+				endTime[1] = Integer.parseInt(console.nextLine());
+				String endAmPm = console.nextLine().toUpperCase();
+				
+				Staff newStaff = new Staff(name, id, phoneNum, email, roomNum, startTime,startAmPm, endTime,endAmPm);
+				
+				//Checks for same start and end times
+				if(newStaff.getStartAmOrPm().equals(newStaff.getEndAmOrPm()) && newStaff.getStartTime().equals(newStaff.getEndTime()))
+					throw new customException("Error: Starting from pm, ending at am");
+				
+				
+				
+				allStaffs.add(newStaff);
+			}
+			catch(Exception e)
+			{
+				System.out.println("The starting time is greater than the ending time, Please fix the staff's appointment time then reboot");
+				System.exit(0);
+			}
 		}
 		
 		return allStaffs;
+	}
+	public static void createStaffAppointments(ArrayList<Staff> allStaffs)
+	{
+		for(int i = 0;i < allStaffs.size();i++)
+		{
+			allStaffs.get(i).createAppointments();
+		}
 	}
 	/**
 	 * This function will get the file containing all the appointments the user wants to read in
@@ -237,15 +233,15 @@ public class VirtualAssistant {
 			System.out.println("Phone number: " + allStaffs.get(i).getPhoneNum());
 			System.out.println("Email: " + allStaffs.get(i).getEmail());
 			System.out.println("Room number: " + allStaffs.get(i).getRoomNum());
-			System.out.println("Start Time: " + allStaffs.get(i).getStartTime());
-			System.out.println("End Time: " + allStaffs.get(i).getEndTime());
+			System.out.println("Start Time: " + allStaffs.get(i).getStartTime() + " " + allStaffs.get(i).getStartAmOrPm());
+			System.out.println("End Time: " + allStaffs.get(i).getEndTime() + " " + allStaffs.get(i).getEndAmOrPm());
 		}
 		
 		System.out.println("Which Staff memeber would you like to see?: ");
 		chooseStaff = in.nextInt();
 		
 		//Display staff appointments
-		//allStaffs[chooseStaff];
+		//Appointment newAppointment = new Appointment();
 		
 		//Visitor
 		Person visitor = getVisitorInfo(in);
@@ -257,9 +253,6 @@ public class VirtualAssistant {
 		
 		//appointment information
 		String appointmentDescription = getDescription(in);
-		
-		//Appointment
-		Appointment newAppointment = new Appointment(visitor,appointmentDescription);
 	}
 	
 	//=================================== Collecting visitor info ===============================================

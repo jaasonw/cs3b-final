@@ -5,8 +5,10 @@ JJAshraf@pasadena.edu
 R302A
 9
 0
-5
+AM
+11
 0
+AM
 Jason Wong
 00000000
 626-566-999
@@ -14,5 +16,7 @@ JWong@pasadena.edu
 R202A
 9
 0
+AM
 3
 0
+PM

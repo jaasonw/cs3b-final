@@ -8,7 +8,9 @@ public class Appointment {
 	public Appointment(Time start, Time end) {
 		this.visitor = new Person();
 		this.open = true;
+		System.out.println(start.getHour() +": " + start.getMinute());
 		this.start = start;
+		System.out.println(this.start.getHour() + ": " + this.start.getMinute());
 		this.end = end;
 	}
 	
@@ -19,6 +21,6 @@ public class Appointment {
 
 	@Override
 	public String toString() {
-		return start + " - " + end + " " + (this.open) ? "OPEN" : "CLOSED";
+		return this.start + " - " + this.end + " " + ((this.open) ? "OPEN" : "CLOSED");
 	}
 }

@@ -1,12 +1,14 @@
 Jamal Ashraf
-00005000
+00006000
 626-585-3095
 JJAshraf@pasadena.edu
 R302A
 9
 0
+PM
 5
 0
+AM
 Jason Wong
 00000000
 626-566-999
@@ -14,5 +16,7 @@ JWong@pasadena.edu
 R202A
 9
 0
+AM
 3
 0
+PM
