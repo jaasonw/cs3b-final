@@ -1,6 +1,5 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -71,8 +70,8 @@ public class VirtualAssistant {
 				Staff newStaff = new Staff(name, id, phoneNum, email, roomNum, startTime,startAmPm, endTime,endAmPm);
 				
 				//Checks for same start and end times
-				if(newStaff.getStartAmOrPm().equals(newStaff.getEndAmOrPm()) && newStaff.getStartTime().equals(newStaff.getEndTime()))
-					throw new customException("Error: Starting from pm, ending at am");
+				// if(newStaff.getStartAmOrPm().equals(newStaff.getEndAmOrPm()) && newStaff.getStartTime().equals(newStaff.getEndTime()))
+				// 	throw new customException("Error: Starting from pm, ending at am");
 				
 				
 				
@@ -254,8 +253,8 @@ public class VirtualAssistant {
 			System.out.println("Phone number: " + allStaffs.get(i).getPhoneNum());
 			System.out.println("Email: " + allStaffs.get(i).getEmail());
 			System.out.println("Room number: " + allStaffs.get(i).getRoomNum());
-			System.out.println("Start Time: " + allStaffs.get(i).getStartTime() + " " + allStaffs.get(i).getStartAmOrPm());
-			System.out.println("End Time: " + allStaffs.get(i).getEndTime() + " " + allStaffs.get(i).getEndAmOrPm());
+			System.out.println("Start Time: " + allStaffs.get(i).getStartTime());
+			System.out.println("End Time: " + allStaffs.get(i).getEndTime());
 		}
 	}
 	
