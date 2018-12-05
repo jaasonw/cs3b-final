@@ -39,10 +39,27 @@ public class Time {
     
     @Override
     public String toString() {
-    	if(this.minute < 10)
-    		return this.hour + ":" + this.minute + "0";
-    	else
-    		return this.hour + ":" + this.minute;
+        String hour = "";
+        String minutes = "";
+        String ampm = "";
+        if (this.hour > 12) {
+            hour += this.hour - 12;
+            ampm = "pm";
+        }
+        else if (this.hour == 12) {
+            hour += this.hour;
+            ampm = "pm";
+        }
+        else if (this.hour == 0) {
+            hour += "12";
+            ampm = "am";
+        }
+        else {
+            hour += this.hour;
+            ampm = "am";
+        }
+        minutes += this.minute + ((this.minute < 10) ? "0" : "");
+    	return String.format("%s:%s %s", hour, minutes, ampm);
     }
     
     @Override
