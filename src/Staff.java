@@ -3,13 +3,15 @@
  */
 
 import java.util.ArrayList;
+import java.util.HashMap; 
 
 public class Staff extends Person
 {
 	private Time startTime;
 	private Time endTime;
 	private String roomNum;
-	private ArrayList<Appointment> appointments = new ArrayList<Appointment>(); 
+	private ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+	//private HashMap schedule<Date, ArrayList<Appointment>> map = new HashMap<>(); 
 	
 	public Staff(String name, String id, String phoneNum, String email,String roomNum, int[] startTime,String startAmPm, int[] endTime,String endAmPm)
 	{
@@ -73,11 +75,17 @@ public class Staff extends Person
 
 			this.appointments.add(newAppointment);
 		}
-		
+	}
+	
+	public void showAppointments()
+	{
 		for(int i = 0;i < this.appointments.size();i++)
 		{
 			System.out.print(i + ": ");
 			System.out.println(this.appointments.get(i));
+
 		}
 	}
+	
+	
 }
