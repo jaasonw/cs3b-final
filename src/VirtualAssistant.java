@@ -23,10 +23,14 @@ public class VirtualAssistant {
 	private ArrayList<Staff> allStaffs;
 	private String staffListFile;
 	private Scanner input;
+	private ArrayList<Person> allVisitors;
+	
 	public VirtualAssistant() {
 		this.input = new Scanner(System.in);
 		this.staffListFile = "staffList.txt";
 		this.allStaffs = new ArrayList<Staff>();
+		this.allVisitors = new ArrayList<Person>();
+		
 		try {
 			this.getStaffs(staffListFile);
 		}
@@ -35,6 +39,17 @@ public class VirtualAssistant {
 		}
 		this.generateSchedule();
 	}
+	
+	public void addVisitor(Person newVisitor)
+	{
+		this.allVisitors.add(newVisitor);
+	}
+	
+	public ArrayList<Person> getVisitorList()
+	{
+		return this.allVisitors;
+	}
+	
 	public static void main(String args[]) throws FileNotFoundException
 	{	
 		VirtualAssistant bot = new VirtualAssistant();
@@ -43,7 +58,7 @@ public class VirtualAssistant {
 		while(!done)
 		{
 			String questionOrAppointment = bot.getAppointmentOrQuestion();
-			bot.checkQuestionOrAppointment(questionOrAppointment);
+			bot.checkQuestionOrAppointment(questionOrAppointment,bot);
 		}
 	}
 	public void getStaffs(String fileName) throws FileNotFoundException
@@ -70,9 +85,6 @@ public class VirtualAssistant {
 				
 				Staff newStaff = new Staff(name, id, phoneNum, email, roomNum, startTime,startAmPm, endTime,endAmPm);
 				
-				//Checks for same start and end times
-				// if(newStaff.getStartAmOrPm().equals(newStaff.getEndAmOrPm()) && newStaff.getStartTime().equals(newStaff.getEndTime()))
-				// 	throw new customException("Error: Starting from pm, ending at am");
 				this.allStaffs.add(newStaff);
 			}
 			catch(Exception e)
@@ -169,11 +181,11 @@ public class VirtualAssistant {
 		
 		return questionOrAppointment;
 	}
-	public void checkQuestionOrAppointment(String qOrA)
+	public void checkQuestionOrAppointment(String qOrA,VirtualAssistant bot)
 	{
 		if(qOrA.equals("appointment"))
 		{
-			this.checkOrMakeAppointment(allStaffs);
+			this.checkOrMakeAppointment(allStaffs,bot);
 		}
 		else if(qOrA.equals("question"))
 		{
@@ -184,7 +196,7 @@ public class VirtualAssistant {
 	 * For right now the user has to type new Appointment to make  a new appointment if we want voice recognition  then change what the setOrchecekAppointment is looking for
 	 * @param in
 	 */
-	public void checkOrMakeAppointment(ArrayList<Staff> allStaffs)
+	public void checkOrMakeAppointment(ArrayList<Staff> allStaffs,VirtualAssistant bot)
 	{
 		String setOrCheckAppointments = "";
 		
@@ -201,11 +213,25 @@ public class VirtualAssistant {
 		//If the user wants to make a new appointment
 		if(setOrCheckAppointments.equals("new appointment"))
 		{
-			createNewAppointment();
+			createNewAppointment(bot);
 		}
 		//If the user wants to check in
 		else if(setOrCheckAppointments.equals("check in"))
 		{
+			Person visitor = getVisitorInfo();
+			Person currentVisitor;
+			
+			System.out.println("Please enter your info to check in: ");
+			
+			for(int i = 0;i < bot.getVisitorList().size();i++)
+			{
+				if(bot.getVisitorList().get(i).equals(visitor))
+				{
+					currentVisitor = bot.getVisitorList().get(i);
+				}
+			}
+			
+			System.out.println("Is this information correct?");
 			
 		}
 			
@@ -214,8 +240,9 @@ public class VirtualAssistant {
 	{
 		System.out.println("asking question");
 	}
+	
 	//================================== Creating new appointments ============================================
-	public void createNewAppointment()
+	public void createNewAppointment(VirtualAssistant bot)
 	{
 		int staffChosen = 0;
 		Staff currentStaff;
@@ -272,10 +299,13 @@ public class VirtualAssistant {
 		currentAppointment.setReason(appointmentDescription);
 		currentAppointment.closeAppointment();
 		
+		//set the appointment inside the person and set the person inside the virtual assistant
+		visitor.addAppointment(currentAppointment);
+		bot.addVisitor(visitor);
+		
+		
 		//Show that the appointment closed
 		currentStaff.showTimes(currentDate);
-		
-		
 		
 		
 	}
@@ -348,6 +378,7 @@ public class VirtualAssistant {
 		
 		return chooseAppointment - 1;
 	}
+	
 	//=================================== Collecting visitor info ===============================================
 	public Person getVisitorInfo()
 	{

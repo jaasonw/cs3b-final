@@ -1,12 +1,16 @@
 /**
  * This class will represent a person with a name
  */
+
+import java.util.ArrayList;
+
 public class Person
 {
 	private String name;
 	private String id;
 	private String phoneNum;
 	private String email;
+	private ArrayList<Appointment> appointments = new ArrayList<Appointment>();
 	
 	/**
 	 * A constructor that will initialize the name
@@ -57,5 +61,19 @@ public class Person
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Person)) {
+            return false;
+        }
+        Person person = (Person) o;
+        return name == person.name && id == person.id && phoneNum == person.phoneNum && email == person.email;
+    }
+	
+	public void addAppointment(Appointment newAppointment) {
+		this.appointments.add(newAppointment);
 	}
 }
