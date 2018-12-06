@@ -20,74 +20,60 @@ import java.util.Scanner;
  */
 
 public class VirtualAssistant {
+	private ArrayList<Staff> allStaffs;
+	private String staffListFile;
+	private Scanner input;
+	public VirtualAssistant() {
+		this.input = new Scanner(System.in);
+		this.staffListFile = "staffList.txt";
+		this.allStaffs = new ArrayList<Staff>();
+		try {
+			this.getStaffs(staffListFile);
+		}
+		catch (FileNotFoundException e) {
+			System.out.println("Error: staff list file not found");
+		}
+		this.generateSchedule();
+	}
 	public static void main(String args[]) throws FileNotFoundException
-	{
-		Scanner in = new Scanner(System.in);
-		
-		/*Saving info
-		ArrayList<Appointment> allAppointments = new ArrayList<Appointment>();
-		String fileName = getAppointmentFiles();
-		
-		File inFile = new File(fileName);
-		Scanner console = new Scanner(inFile);
-		
-		allAppointments = getAppointmentFile(console);
-		*/
-		
-		//================= Staff Info ========================
-		ArrayList<Staff> allStaffs = new ArrayList<Staff>();
-		File staffFile = new File("staffList.txt");
-		
-		Scanner console = new Scanner(staffFile);
-		
-		allStaffs = getStaffs(console);
-		
-		generateSchedule(allStaffs);
-		
-		//Loop through program
+	{	
+		VirtualAssistant bot = new VirtualAssistant();
 		boolean done = false;
 		
 		while(!done)
 		{
-			String questionOrAppointment = getAppointmentOrQuestion(in);
-			checkQuestionOrAppointment(questionOrAppointment,in,allStaffs);
+			String questionOrAppointment = bot.getAppointmentOrQuestion();
+			bot.checkQuestionOrAppointment(questionOrAppointment);
 		}
-		
-		
-		in.close();
 	}
-	public static ArrayList<Staff> getStaffs(Scanner console)
+	public void getStaffs(String fileName) throws FileNotFoundException
 	{
-		ArrayList<Staff> allStaffs = new ArrayList<Staff>();
+		Scanner staffFile = new Scanner(new File(fileName));
 		int[] startTime = new int[2];
-		int[] endTime = new int[2];
+		int[] endTime = new int[2];	
 		
-		
-		while(console.hasNextLine())
+		while(staffFile.hasNextLine())
 		{	
 			try
 			{
-				String name = console.nextLine();
-				String id = console.nextLine();
-				String phoneNum = console.nextLine();
-				String email = console.nextLine();
-				String roomNum = console.nextLine();
-				startTime[0] = Integer.parseInt(console.nextLine());
-				startTime[1]= Integer.parseInt(console.nextLine());
-				String startAmPm = console.nextLine().toUpperCase();
-				endTime[0] = Integer.parseInt(console.nextLine());
-				endTime[1] = Integer.parseInt(console.nextLine());
-				String endAmPm = console.nextLine().toUpperCase();
+				String name = staffFile.nextLine();
+				String id = staffFile.nextLine();
+				String phoneNum = staffFile.nextLine();
+				String email = staffFile.nextLine();
+				String roomNum = staffFile.nextLine();
+				startTime[0] = Integer.parseInt(staffFile.nextLine());
+				startTime[1]= Integer.parseInt(staffFile.nextLine());
+				String startAmPm = staffFile.nextLine().toUpperCase();
+				endTime[0] = Integer.parseInt(staffFile.nextLine());
+				endTime[1] = Integer.parseInt(staffFile.nextLine());
+				String endAmPm = staffFile.nextLine().toUpperCase();
 				
 				Staff newStaff = new Staff(name, id, phoneNum, email, roomNum, startTime,startAmPm, endTime,endAmPm);
 				
 				//Checks for same start and end times
 				// if(newStaff.getStartAmOrPm().equals(newStaff.getEndAmOrPm()) && newStaff.getStartTime().equals(newStaff.getEndTime()))
 				// 	throw new customException("Error: Starting from pm, ending at am");
-				
-				
-				
-				allStaffs.add(newStaff);
+				this.allStaffs.add(newStaff);
 			}
 			catch(Exception e)
 			{
@@ -95,25 +81,23 @@ public class VirtualAssistant {
 				System.exit(0);
 			}
 		}
-		
-		return allStaffs;
+		staffFile.close();
 	}
-	public static void generateSchedule(ArrayList<Staff> allStaffs)
+	public void generateSchedule()
 	{
-		for(int i = 0;i < allStaffs.size();i++)
+		for(Staff staff : this.allStaffs)
 		{
-			allStaffs.get(i).createSchedule();
+			staff.createSchedule();
 		}
 	}
 	/**
 	 * This function will get the file containing all the appointments the user wants to read in
 	 * @return file - returns the name of the file that was able to be read in.
 	 */
-	public static String getAppointmentFiles()
+	public String getAppointmentFiles()
 	{
 		//========================= Variables =====================================
 		boolean done = false;
-		Scanner in = new Scanner(System.in);
 		String file = "";
 		//========================= Calculations =====================================
 		while(!done)
@@ -121,7 +105,7 @@ public class VirtualAssistant {
 			try
 			{
 				System.out.print("Pleaase enter a The file containing the appointments to be read: ");
-				file = in.nextLine();
+				file = this.input.nextLine();
 				File inFile = new File(file);
 				Scanner console = new Scanner(inFile);
 				console.close();
@@ -140,7 +124,7 @@ public class VirtualAssistant {
 	 * @param line - the line in the file 
 	 * @return dates - 3 integers representing the month, day and year
 	 */
-	public static int[] getDate(String line)
+	public int[] getDate(String line)
 	{
 		//======================== Variables ======================================
 		String month = "";
@@ -170,26 +154,26 @@ public class VirtualAssistant {
 		return dates;
 		
 	}
-	public static String getAppointmentOrQuestion(Scanner in)
+	public String getAppointmentOrQuestion()
 	{
 		String questionOrAppointment = "";
 		
 		System.out.print("Hello! Are you here for appointments or to ask a question? ");
-		questionOrAppointment = in.next().toLowerCase();
+		questionOrAppointment = this.input.next().toLowerCase();
 		
 		while(!questionOrAppointment.equals("question") && !questionOrAppointment.equals("appointment"))
 		{
 			System.out.print("I'm sorry I didn't understand that, are you here to make a appointment or ask a question? ");
-			questionOrAppointment = in.next().toLowerCase();
+			questionOrAppointment = this.input.next().toLowerCase();
 		}
 		
 		return questionOrAppointment;
 	}
-	public static void checkQuestionOrAppointment(String qOrA,Scanner in,ArrayList<Staff> allStaffs)
+	public void checkQuestionOrAppointment(String qOrA)
 	{
 		if(qOrA.equals("appointment"))
 		{
-			checkOrMakeAppointment(in,allStaffs);
+			this.checkOrMakeAppointment(allStaffs);
 		}
 		else if(qOrA.equals("question"))
 		{
@@ -200,24 +184,24 @@ public class VirtualAssistant {
 	 * For right now the user has to type new Appointment to make  a new appointment if we want voice recognition  then change what the setOrchecekAppointment is looking for
 	 * @param in
 	 */
-	public static void checkOrMakeAppointment(Scanner in, ArrayList<Staff> allStaffs)
+	public void checkOrMakeAppointment(ArrayList<Staff> allStaffs)
 	{
 		String setOrCheckAppointments = "";
 		
 		System.out.print("Would you like to check in or make a new appointment (type: check in or new appointment)? ");
-		in.nextLine();
-		setOrCheckAppointments = in.nextLine().toLowerCase();
+		this.input.nextLine();
+		setOrCheckAppointments = this.input.nextLine().toLowerCase();
 		
 		while(!setOrCheckAppointments.equals("check in") && !setOrCheckAppointments.equals("new appointment"))
 		{
 			System.out.print("I'm sorry I didn't understand that, do you want to check in  or make a new appointment (type: check in or new appointment)? ");
-			setOrCheckAppointments = in.nextLine().toLowerCase();
+			setOrCheckAppointments = this.input.nextLine().toLowerCase();
 		}
 		
 		//If the user wants to make a new appointment
 		if(setOrCheckAppointments.equals("new appointment"))
 		{
-			createNewAppointment(in,allStaffs);
+			createNewAppointment();
 		}
 		//If the user wants to check in
 		else if(setOrCheckAppointments.equals("check in"))
@@ -226,12 +210,12 @@ public class VirtualAssistant {
 		}
 			
 	}
-	public static void askQuestions()
+	public void askQuestions()
 	{
 		System.out.println("asking question");
 	}
 	//================================== Creating new appointments ============================================
-	public static void createNewAppointment(Scanner in,ArrayList<Staff> allStaffs)
+	public void createNewAppointment()
 	{
 		int staffChosen = 0;
 		Staff currentStaff;
@@ -243,18 +227,18 @@ public class VirtualAssistant {
 		Appointment currentAppointment;
 		
 		//Show staff
-		displayStaff(allStaffs);
+		displayStaff();
 		
 		//Choose staff you want to see
-		staffChosen = chooseStaff(in, allStaffs.size());		
+		staffChosen = chooseStaff(this.allStaffs.size());		
 		//The current staff that was picked
-		currentStaff = allStaffs.get(staffChosen);
+		currentStaff = this.allStaffs.get(staffChosen);
 		
 		//Display staff schedule
 		System.out.println("Available dates: ");
 		currentStaff.showDates();
 		
-		dateChosen = chooseDate(in,currentStaff.getDates().size()); 
+		dateChosen = chooseDate(currentStaff.getDates().size()); 
 		
 		currentDate = currentStaff.getDates().get(dateChosen);
 		
@@ -262,7 +246,7 @@ public class VirtualAssistant {
 		System.out.println("Available times: ");
 		currentStaff.showTimes(currentDate);
 		
-		appointmentChosen = chooseAppointment(in,currentStaff.getAppointments(currentDate).size());
+		appointmentChosen = chooseAppointment(currentStaff.getAppointments(currentDate).size());
 		
 		currentAppointment = currentStaff.getAppointments(currentDate).get(appointmentChosen);
 	
@@ -272,16 +256,16 @@ public class VirtualAssistant {
 			
 			currentStaff.showTimes(currentDate);
 			
-			appointmentChosen = chooseAppointment(in,currentStaff.getAppointments(currentDate).size());
+			appointmentChosen = chooseAppointment(currentStaff.getAppointments(currentDate).size());
 			
 			currentAppointment = currentStaff.getAppointments(currentDate).get(appointmentChosen);
 		}
 		
 		//Visitor
-		Person visitor = getVisitorInfo(in);
+		Person visitor = getVisitorInfo();
 		
 		//appointment information
-		String appointmentDescription = getDescription(in);
+		String appointmentDescription = getDescription();
 		
 		//Set the appointment info into the appointment class
 		currentAppointment.setVisitor(visitor);
@@ -295,108 +279,108 @@ public class VirtualAssistant {
 		
 		
 	}
-	public static void displayStaff(ArrayList<Staff> allStaffs)
+	public void displayStaff()
 	{
 		System.out.println("Here is a list of our staffs: ");
-		for(int i = 0; i < allStaffs.size(); i++)
+		for(int i = 0; i < this.allStaffs.size(); i++)
 		{
 			System.out.println(i+1 + ".");
-			System.out.println("Name: " + allStaffs.get(i).getName());
-			System.out.println("ID: " + allStaffs.get(i).getId());
-			System.out.println("Phone number: " + allStaffs.get(i).getPhoneNum());
-			System.out.println("Email: " + allStaffs.get(i).getEmail());
-			System.out.println("Room number: " + allStaffs.get(i).getRoomNum());
-			System.out.println("Start Time: " + allStaffs.get(i).getStartTime());
-			System.out.println("End Time: " + allStaffs.get(i).getEndTime());
+			System.out.println("Name: " + this.allStaffs.get(i).getName());
+			System.out.println("ID: " + this.allStaffs.get(i).getId());
+			System.out.println("Phone number: " + this.allStaffs.get(i).getPhoneNum());
+			System.out.println("Email: " + this.allStaffs.get(i).getEmail());
+			System.out.println("Room number: " + this.allStaffs.get(i).getRoomNum());
+			System.out.println("Start Time: " + this.allStaffs.get(i).getStartTime());
+			System.out.println("End Time: " + this.allStaffs.get(i).getEndTime());
 		}
 	}
 	
-	public static int chooseStaff(Scanner in, int maxNum)
+	public int chooseStaff(int maxNum)
 	{
 		int chooseStaff = 1;
 		
 		System.out.print("Which Staff member would you like to see?: ");
-		chooseStaff = in.nextInt();
+		chooseStaff = this.input.nextInt();
 		
 		while(chooseStaff < 1 || chooseStaff >= maxNum + 1)
 		{
 			System.out.print("Sorry, but that is not an option, please try again: ");
-			chooseStaff = in.nextInt();
+			chooseStaff = this.input.nextInt();
 		}
 		
-		in.nextLine();
+		this.input.nextLine();
 		
 		return chooseStaff - 1;
 	}
 	
-	public static int chooseDate(Scanner in, int maxNum)
+	public int chooseDate(int maxNum)
 	{
 		int chooseDate = 1;
 		
 		System.out.print("Which Date would you like to see?: ");
-		chooseDate = in.nextInt();
+		chooseDate = this.input.nextInt();
 		
 		while(chooseDate < 1 || chooseDate >= maxNum + 1)
 		{
 			System.out.print("Sorry, but that is not an option, please try again: ");
-			chooseDate = in.nextInt();
+			chooseDate = this.input.nextInt();
 		}
 		
-		in.nextLine();
+		this.input.nextLine();
 		
 		return chooseDate - 1;
 	}
 	
-	public static int chooseAppointment(Scanner in, int maxNum)
+	public int chooseAppointment(int maxNum)
 	{
 		int chooseAppointment = 1;
 		
 		System.out.print("Which Date would you like to see?: ");
-		chooseAppointment = in.nextInt();
+		chooseAppointment = this.input.nextInt();
 		
 		while(chooseAppointment < 1 || chooseAppointment >= maxNum + 1)
 		{
 			System.out.print("Sorry, but that is not an option, please try again: ");
-			chooseAppointment = in.nextInt();
+			chooseAppointment = this.input.nextInt();
 		}
 		
-		in.nextLine();
+		this.input.nextLine();
 		
 		return chooseAppointment - 1;
 	}
 	//=================================== Collecting visitor info ===============================================
-	public static Person getVisitorInfo(Scanner in)
+	public Person getVisitorInfo()
 	{
 		String changeInfo = "";
 		//Visitor's name, id, phone,  email, brief description
 		//for now the  user can only set  their name once but there will  be an interface to change names
-		String visitorName = getName(in);
-		String visitorId = getID(in);
-		String visitorPhone = getPhone(in);
-		String visitorEmail = getEmail(in);
+		String visitorName = getName();
+		String visitorId = getID();
+		String visitorPhone = getPhone();
+		String visitorEmail = getEmail();
 		
 		//Checking to make sure user input all their personal info correctly
 		
 		//Add the visitor's email later
 		while(!changeInfo.equals("next"))
 		{
-			changeInfo = checkInfo(visitorName,visitorId,visitorPhone,visitorEmail,in);
+			changeInfo = checkInfo(visitorName,visitorId,visitorPhone,visitorEmail);
 			
 			if(changeInfo.equals("name"))
 			{
-				visitorName = getName(in);
+				visitorName = getName();
 			}
 			else if(changeInfo.equals("id"))
 			{
-				visitorId = getID(in);
+				visitorId = getID();
 			}
 			else if(changeInfo.equals("phone number"))
 			{
-				visitorPhone = getPhone(in);
+				visitorPhone = getPhone();
 			}
 			else if(changeInfo.equals("email"))
 			{
-				visitorEmail = getEmail(in);
+				visitorEmail = getEmail();
 			}
 		}
 		
@@ -407,13 +391,13 @@ public class VirtualAssistant {
 	//============================================================ Inputs/input validations for visitor section =======================================================
 	
 	//========================= NAME  ==========================
-	public static String getName(Scanner in)
+	public String getName()
 	{
 		String name = "";
 		boolean noDigits = false;
 		
 		System.out.print("What is your name?: ");
-		name = in.nextLine();
+		name = this.input.nextLine();
 				
 		while(noDigits == false)
 		{
@@ -425,7 +409,7 @@ public class VirtualAssistant {
 			{
 				noDigits = false;
 				System.out.print("Name contained invalid characters or is too long please try again: ");
-				name = in.nextLine();
+				name = this.input.nextLine();
 			}
 		}
 		noDigits = false;
@@ -437,7 +421,7 @@ public class VirtualAssistant {
 	 * @param word - the word to check
 	 * @return - true if there is no digits, false otherwise
 	 */
-	public static boolean checkName(String word)
+	public boolean checkName(String word)
 	{
 		//===================== Variables =======================================
 		int inputErrorCounter = 0;
@@ -465,13 +449,13 @@ public class VirtualAssistant {
 		}
 	}
 	//============================== ID ====================================
-	public static String getID(Scanner in)
+	public String getID()
 	{
 		String id = "";
 		boolean onlyDigits = false;
 		
 		System.out.print("Please enter your 8 digit student id: ");
-		id = in.nextLine();
+		id = this.input.nextLine();
 		
 		while(onlyDigits == false)
 		{
@@ -483,7 +467,7 @@ public class VirtualAssistant {
 			{
 				onlyDigits = false;
 				System.out.print("The ID should contain 8 numbers: ");
-				id = in.nextLine();
+				id = this.input.nextLine();
 			}
 		}
 		onlyDigits = false;
@@ -496,7 +480,7 @@ public class VirtualAssistant {
 	 * @param word - the word to check
 	 * @return - true if there is no digits, false otherwise
 	 */
-	public static boolean checkID(String word)
+	public boolean checkID(String word)
 	{
 		//===================== Variables =======================================
 		int inputErrorCounter = 0;
@@ -524,13 +508,13 @@ public class VirtualAssistant {
 		}
 	}
 	//========================= PHONE  ==========================
-	public static String getPhone(Scanner in)
+	public String getPhone()
 	{
 		String phoneNum = "";
 		boolean goodInput = false;
 		
 		System.out.print("Please enter your phone number(xxx-xxx-xxxx): ");
-		phoneNum = in.nextLine();
+		phoneNum = this.input.nextLine();
 		
 		while(goodInput == false)
 		{
@@ -542,7 +526,7 @@ public class VirtualAssistant {
 			{
 				goodInput = false;
 				System.out.print("The phone number should be in this form (xxx-xxx-xxxx): ");
-				phoneNum = in.nextLine();
+				phoneNum = this.input.nextLine();
 			}
 		}
 		
@@ -555,7 +539,7 @@ public class VirtualAssistant {
 	 * @param word - the word to check
 	 * @return - true if there is no digits, false otherwise
 	 */
-	public static boolean checkPhoneNum(String word)
+	public boolean checkPhoneNum(String word)
 	{
 		//===================== Variables =======================================
 		int inputErrorCounter = 0;
@@ -609,13 +593,13 @@ public class VirtualAssistant {
 	}
 	//**** Find a way to validate the emails later
 	//========================= EMAIL  ==========================
-	public static String getEmail(Scanner in)
+	public String getEmail()
 	{
 		String email = "";
 		boolean goodInput = false;
 		
 		System.out.print("Please enter your email address: ");
-		email = in.nextLine();
+		email = this.input.nextLine();
 		
 		while(goodInput == false)
 		{
@@ -627,7 +611,7 @@ public class VirtualAssistant {
 			{
 				goodInput = false;
 				System.out.print("The email address should be in the form of example@emailCompany.com: ");
-				email = in.nextLine();
+				email = this.input.nextLine();
 			}
 		}
 		
@@ -639,7 +623,7 @@ public class VirtualAssistant {
 	 * @param word - the word to check
 	 * @return - true if there is no digits, false otherwise
 	 */
-	public static boolean checkEmail(String word)
+	public boolean checkEmail(String word)
 	{
 		// check if theres an @
 		if (word.indexOf('@') != -1)
@@ -656,13 +640,13 @@ public class VirtualAssistant {
 		return false;
 	}
 	//========================== DESCRIPTION ==================================
-	public static String getDescription(Scanner in)
+	public String getDescription()
 	{
 		String description = "";
 		boolean goodInput = false;
 		
 		System.out.print("Please enter a brief description for your appointment up to 250 words: ");
-		description = in.nextLine();
+		description = this.input.nextLine();
 		
 		if(description.length() >= 250)
 		{
@@ -672,7 +656,7 @@ public class VirtualAssistant {
 		return description;
 	}
 	//========================== Checking user's info =========================
-	public static String checkInfo(String name,String id,String phoneNum,String email,Scanner in)
+	public String checkInfo(String name,String id,String phoneNum,String email)
 	{
 		String change = "";
 		
@@ -681,19 +665,19 @@ public class VirtualAssistant {
 		System.out.println("\nIf any of the information here is incorrect please enter the information you want to change ex.name");
 		System.out.print("If everything is fine type \"next\": ");
 		
-		change = in.nextLine().toLowerCase();
+		change = this.input.nextLine().toLowerCase();
 		
 		
 		while(!change.equals("name") && !change.equals("id") && !change.equals("phone number") && !change.equals("email") && !change.equals("next"))
 		{
 			System.out.print("That is not part of the information! Please try again: ");
-			change = in.nextLine().toLowerCase();
+			change = this.input.nextLine().toLowerCase();
 		}
 		
 		return change;
 	}
 	//========================== DISPLAY INFO =================================
-	public static void displayInfo(String name,String id,String phoneNum,String email)
+	public void displayInfo(String name,String id,String phoneNum,String email)
 	{
 		System.out.println("Name: " + name);
 		//Doesn't display the v, the v will keep track of who's visitor and who's staff behind the scene
