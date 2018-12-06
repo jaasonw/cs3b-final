@@ -11,7 +11,7 @@ public class Person
 	private String phoneNum;
 	private String email;
 	private ArrayList<Appointment> appointments = new ArrayList<Appointment>();
-	
+
 	/**
 	 * A constructor that will initialize the name
 	 */
@@ -63,6 +63,13 @@ public class Person
 		this.email = email;
 	}
 	
+	public ArrayList<Appointment> getAppointments() {
+		return this.appointments;
+	}
+	
+	public void addAppointment(Appointment newAppointment) {
+		this.appointments.add(newAppointment);
+	}
 	public boolean equals(Object o) {
         if (o == this)
             return true;
@@ -73,7 +80,4 @@ public class Person
         return name == person.name && id == person.id && phoneNum == person.phoneNum && email == person.email;
     }
 	
-	public void addAppointment(Appointment newAppointment) {
-		this.appointments.add(newAppointment);
-	}
 }

@@ -53,7 +53,7 @@ public class Staff extends Person
 		this.roomNum = roomNum;
 	}
 	
-	public ArrayList<Appointment> createAppointments() {
+	public ArrayList<Appointment> createAppointments(Date date) {
 		Time interval = new Time(this.startTime.getHour(),this.getStartTime().getMinute());
 		Time appointmentStart;
 		Time appointmentEnd;
@@ -65,7 +65,7 @@ public class Staff extends Person
 			interval.addMinutes(30);
 			appointmentEnd = new Time(interval.getHour(),interval.getMinute());
 			Appointment newAppointment = new Appointment(appointmentStart,appointmentEnd);
-
+			newAppointment.setDate(date);
 			appointmentList.add(newAppointment);
 		}
 		
@@ -81,7 +81,7 @@ public class Staff extends Person
 			today.addDays(i);
 			this.dates.add(today);
 			
-			this.schedule.put(today, createAppointments());
+			this.schedule.put(today, createAppointments(today));
 		}
 	}
 	

@@ -7,6 +7,7 @@
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -58,7 +59,7 @@ public class VirtualAssistant {
 		while(!done)
 		{
 			String questionOrAppointment = bot.getAppointmentOrQuestion();
-			bot.checkQuestionOrAppointment(questionOrAppointment,bot);
+			bot.checkQuestionOrAppointment(questionOrAppointment);
 		}
 	}
 	public void getStaffs(String fileName) throws FileNotFoundException
@@ -106,31 +107,67 @@ public class VirtualAssistant {
 	 * This function will get the file containing all the appointments the user wants to read in
 	 * @return file - returns the name of the file that was able to be read in.
 	 */
-	public String getAppointmentFiles()
-	{
-		//========================= Variables =====================================
-		boolean done = false;
-		String file = "";
-		//========================= Calculations =====================================
-		while(!done)
-		{
-			try
-			{
-				System.out.print("Pleaase enter a The file containing the appointments to be read: ");
-				file = this.input.nextLine();
-				File inFile = new File(file);
-				Scanner console = new Scanner(inFile);
-				console.close();
-				done = true;
-			}
-			catch (FileNotFoundException exception)
-			{
-				System.out.println("File not found.");
-			}
-		}
-		//========================= Return =====================================
-		return file;
-	}
+	// public void getAppointmentFiles()
+	// {
+	// 	//========================= Variables =====================================
+	// 	boolean done = false;
+	// 	String fileName = "";
+	// 	Scanner file;
+	// 	//========================= Calculations =====================================
+	// 	while(!done)
+	// 	{
+	// 		try
+	// 		{
+	// 			System.out.print("Pleaase enter a The file containing the appointments to be read: ");
+	// 			fileName = this.input.nextLine();
+	// 			File inFile = new File(file);
+	// 			file = new Scanner(inFile);
+
+	// 			done = true;
+	// 		}
+	// 		catch (FileNotFoundException exception)
+	// 		{
+	// 			System.out.println("File not found.");
+	// 		}
+	// 	}
+	// 	while (file.hasNextLine()) {
+	// 		Person person = new Person();
+	// 		Queue<String> appointmentData = new Queue<String>();
+	// 		person.setId(file.nextLine());
+	// 		person.setName(file.nextLine());
+	// 		person.setEmail(file.nextLine());
+	// 		// skip open bracket
+	// 		file.nextLine();
+	// 		for (String next = file.nextLine(); !next.equals("]"); next = file.nextLine()) {
+	// 			appointmentData.add(file.nextLine());
+	// 		}
+	// 		while (!appointmentData.isEmpty()) {
+	// 			Appointment newAppointment = new Appointment();
+	// 			Date date = new Date();
+	// 			date.setMonth(Integer.parseInt(appointmentData.poll()));
+	// 			date.setDay(Integer.parseInt(appointmentData.poll()));
+	// 			date.setYear(Integer.parseInt(appointmentData.poll()));
+	// 			newAppointment.setDate(date);
+				
+	// 			Time startTime = new Time();
+	// 			startTime.setHour(Integer.parseInt(appointmentData.poll()));
+	// 			startTime.setMinute(Integer.parseInt(appointmentData.poll()));
+	// 			newAppointment.setStartTime(startTime);
+
+	// 			Time endTime = new Time();
+	// 			endTime.setHour(Integer.parseInt(appointmentData.poll()));
+	// 			endTime.setMinute(Integer.parseInt(appointmentData.poll()));
+	// 			newAppointment.setEndTime(endTime);
+
+	// 			if (appointmentData.poll() == "1")
+	// 				newAppointment.setOpen(true);
+	// 			else
+	// 				newAppointment.setOpen(false);
+	// 			newAppointment.setReason(appointmentData.poll());
+	// 		}
+	// 	}
+	// 	file.close();
+	// }
 	/**
 	 * This function will get the date of the appointment from the line read in
 	 * @param line - the line in the file 
@@ -181,11 +218,11 @@ public class VirtualAssistant {
 		
 		return questionOrAppointment;
 	}
-	public void checkQuestionOrAppointment(String qOrA,VirtualAssistant bot)
+	public void checkQuestionOrAppointment(String qOrA)
 	{
 		if(qOrA.equals("appointment"))
 		{
-			this.checkOrMakeAppointment(allStaffs,bot);
+			this.checkOrMakeAppointment(allStaffs);
 		}
 		else if(qOrA.equals("question"))
 		{
@@ -196,7 +233,7 @@ public class VirtualAssistant {
 	 * For right now the user has to type new Appointment to make  a new appointment if we want voice recognition  then change what the setOrchecekAppointment is looking for
 	 * @param in
 	 */
-	public void checkOrMakeAppointment(ArrayList<Staff> allStaffs,VirtualAssistant bot)
+	public void checkOrMakeAppointment(ArrayList<Staff> allStaffs)
 	{
 		String setOrCheckAppointments = "";
 		
@@ -213,7 +250,8 @@ public class VirtualAssistant {
 		//If the user wants to make a new appointment
 		if(setOrCheckAppointments.equals("new appointment"))
 		{
-			createNewAppointment(bot);
+			createNewAppointment();
+			this.save("test.txt");
 		}
 		//If the user wants to check in
 		else if(setOrCheckAppointments.equals("check in"))
@@ -223,11 +261,11 @@ public class VirtualAssistant {
 			
 			System.out.println("Please enter your info to check in: ");
 			
-			for(int i = 0;i < bot.getVisitorList().size();i++)
+			for(int i = 0;i < this.getVisitorList().size();i++)
 			{
-				if(bot.getVisitorList().get(i).equals(visitor))
+				if(this.getVisitorList().get(i).equals(visitor))
 				{
-					currentVisitor = bot.getVisitorList().get(i);
+					currentVisitor = this.getVisitorList().get(i);
 				}
 			}
 			
@@ -242,7 +280,7 @@ public class VirtualAssistant {
 	}
 	
 	//================================== Creating new appointments ============================================
-	public void createNewAppointment(VirtualAssistant bot)
+	public void createNewAppointment()
 	{
 		int staffChosen = 0;
 		Staff currentStaff;
@@ -295,18 +333,16 @@ public class VirtualAssistant {
 		String appointmentDescription = getDescription();
 		
 		//Set the appointment info into the appointment class
-		currentAppointment.setVisitor(visitor);
 		currentAppointment.setReason(appointmentDescription);
 		currentAppointment.closeAppointment();
 		
 		//set the appointment inside the person and set the person inside the virtual assistant
 		visitor.addAppointment(currentAppointment);
-		bot.addVisitor(visitor);
+		this.addVisitor(visitor);
 		
 		
 		//Show that the appointment closed
 		currentStaff.showTimes(currentDate);
-		
 		
 	}
 	public void displayStaff()
@@ -715,5 +751,36 @@ public class VirtualAssistant {
 		System.out.println("ID: " + id.substring(0, id.length()-1));
 		System.out.println("Phone number: " + phoneNum);
 		System.out.println("Email: " + email);
+	}
+	public void save(String fileName) {
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(fileName, "UTF-8");
+		}
+		catch(Exception e) {
+			System.out.println("file not found");
+			return;
+		}
+		for (Person p : this.allVisitors) {
+			writer.println(p.getId());
+			writer.println(p.getName());
+			writer.println(p.getEmail());
+			writer.println(p.getPhoneNum());
+			writer.println("[");
+			for (Appointment a : p.getAppointments()) {
+				writer.println(a.getDate().getMonth());
+				writer.println(a.getDate().getDay());
+				writer.println(a.getDate().getYear());
+				writer.println(a.getStartTime().getHour());
+				writer.println(a.getStartTime().getMinute());
+				writer.println(a.getEndTime().getHour());
+				writer.println(a.getEndTime().getMinute());
+				writer.println((a.getOpen()) ? "1" : "0");
+				writer.println(a.getReason());
+			}
+			writer.println("]");
+			
+		}
+		writer.close();
 	}
 }
